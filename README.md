@@ -3,7 +3,9 @@
 To run the React part of the demo:
 
 ```
-$ cd client
+$ git clone https://github.com/antibland/thecatapi.git
+$ cd thecatapi/client
+$ yarn install
 $ yarn start
 ```
 
