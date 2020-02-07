@@ -14,10 +14,10 @@ img {
 }
 
 .container {
-  width: 800px;
   max-width: 100%;
   background-color: #000;
   padding-top: .5em;
+  text-align: left;
 }
 
 .buttonsContainer {
@@ -48,4 +48,10 @@ img {
 .top dd {
   grid-column-start: 2;
   margin: 0 0 0 10px;
+}
+
+main {
+  margin: 0 auto;
+  display: block;
+  text-align: center;
 }
