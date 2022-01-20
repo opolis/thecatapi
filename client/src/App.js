@@ -55,6 +55,8 @@ function App() {
 
   function handleBreedSelection() {
     // This handler is intended to set the fetchURL state slice based on the user selection from the breeds dropdown
+    // The ideal solution will populate the dropdown with the breed list API endpoint using its own state slice
+    // during the useEffect that runs on page load
   }
 
   function Buttons() {
