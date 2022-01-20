@@ -5,7 +5,9 @@ function App() {
   const [renderedResponse, setRenderedResponse] = useState([])
   const [imgCache, setImageCache] = useState([]);
   const [imgIndex, setImageIndex] = useState(0);
-  const fetchURL = "https://api.thecatapi.com/v1/images/search";
+  const [breedId, setBreedId] = useState([]);
+  const [fetchURL, setFetchURL] = useState("https://api.thecatapi.com/v1/images/search");
+  // ?breed_id=awir
 
   const getResponse = async () => {
     const response = await fetch(fetchURL);
@@ -51,6 +53,10 @@ function App() {
       })
   }
 
+  function handleBreedSelection() {
+    // This handler is intended to set the fetchURL state slice based on the user selection from the breeds dropdown
+  }
+
   function Buttons() {
     const cache = imgCache;
 
@@ -58,13 +64,19 @@ function App() {
       <div className="buttonsContainer">
         <button disabled={imgIndex == 0} onClick={handlePrev}>Prev</button>
         <button onClick={handleRand}>Random</button>
+        <select name = "breeds" id = "breeds">
+          <option value="beng">Bengals</option>
+          <option value="awir">American Wirehairs</option>
+        </select>
         <button disabled={imgIndex == cache.length - 1} onClick={handleNext}>Next</button>
       </div>
     )
   }
 
   function Response() {
-    const { url, breed, lifeSpan } = imgCache[imgIndex];
+    const { url, breeds } = imgCache[imgIndex];
+
+    console.log(breeds);
 
     return (
       <div className="container">
@@ -74,11 +86,17 @@ function App() {
           </figure>
           <dl>
             <dt>Breed:</dt>
-            <dd>{breed}</dd>
+            <dd>{breeds.length
+                  ? breeds[0].name
+                  : "no breed info"
+                  }</dd>
             <dt> Life Span:</dt>
-            <dd>{lifeSpan}</dd>
+            <dd>{ breeds.length
+                  ? breeds[0].life_span + " years"
+                  : "no life span info"
+                }</dd>
             <dt>Url:</dt>
-            <dd>{url}</dd>
+            <dd><a href={url} target="_blank" rel="noreferrer noopener">{url}</a></dd>
           </dl>
         </div>
         <Buttons />
