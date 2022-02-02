@@ -15,6 +15,7 @@ function App() {
   const [imgIndex, setImageIndex] = useState(0);
   const [breedList, setBreedList] = useState([]);
   const [breedId, setBreedId] = useState();
+  const [breedName, setBreedName] = useState("Select Breed")
   const [fetchURL, setFetchURL] = useState(
     "https://api.thecatapi.com/v1/images/search"
   );
@@ -84,8 +85,10 @@ function App() {
       });
   }
 
-  function handleBreedSelection(value) {
-    setBreedId(value);
+  function handleBreedSelection(event) {
+    const eventArray = event.split(',')
+    setBreedId(eventArray[0]);
+    setBreedName(eventArray[1]);
   }
 
   function Buttons() {
@@ -101,13 +104,14 @@ function App() {
           <select
             onChange={(e) => {
               handleBreedSelection(e.target.value);
+              console.log(e.target.value)
             }}
             name="breeds"
             id="breeds"
           >
-            <option>Select Breed</option>
+            <option>{breedName}</option>
             {breedList.map((entry) => (
-              <option value={entry.id}>{entry.name}</option>
+              <option value={[entry.id, entry.name]}>{entry.name}</option>
             ))}
           </select>
           <button disabled={imgIndex == cache.length - 1} onClick={handleNext}>
