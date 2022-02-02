@@ -105,6 +105,7 @@ function App() {
             name="breeds"
             id="breeds"
           >
+            <option>Select Breed</option>
             {breedList.map((entry) => (
               <option value={entry.id}>{entry.name}</option>
             ))}
