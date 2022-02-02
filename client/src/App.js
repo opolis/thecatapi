@@ -2,33 +2,56 @@ import React, { useState, useEffect } from "react";
 import "./index.css";
 
 function App() {
-  const [renderedResponse, setRenderedResponse] = useState([])
+  const [renderedResponse, setRenderedResponse] = useState([]);
   const [imgCache, setImageCache] = useState([]);
   const [imgIndex, setImageIndex] = useState(0);
-  const [breedId, setBreedId] = useState([]);
-  const [fetchURL, setFetchURL] = useState("https://api.thecatapi.com/v1/images/search");
-  // ?breed_id=awir
+  const [breedList, setBreedList] = useState([]);
+  const [breedId, setBreedId] = useState();
+  const [fetchURL, setFetchURL] = useState(
+    "https://api.thecatapi.com/v1/images/search"
+  );
 
   const getResponse = async () => {
     const response = await fetch(fetchURL);
-    const body = await response.json()
-    if (response.status !== 200) throw Error(body.message)
+    const body = await response.json();
+    if (response.status !== 200) throw Error(body.message);
+
+    return body;
+  };
+
+  const getBreedList = async () => {
+    const response = await fetch("https://api.thecatapi.com/v1/breeds");
+    const body = await response.json();
+    if (response.status !== 200) throw Error(body.message);
 
     return body;
   };
 
   useEffect(() => {
-    getResponse()
-      .then(res => {
+    getResponse().then((res) => {
+      setRenderedResponse(res);
+      pushToCache(res[0]);
+    });
+    getBreedList().then((res) => {
+      setBreedList(res);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (breedId) {
+      setFetchURL(
+        `https://api.thecatapi.com/v1/images/search?breed_id=${breedId}`
+      );
+      getResponse()
+      .then((res) => {
         setRenderedResponse(res);
         pushToCache(res[0]);
       })
-  }, []);
+    }
+  }, [breedId]);
 
   function MainContent({ children }) {
-    return (
-      <main>{children}</main>
-    )
+    return <main>{children}</main>;
   }
 
   function handlePrev() {
@@ -45,40 +68,50 @@ function App() {
 
   function handleRand() {
     getResponse()
-      .then(res => {
+      .then((res) => {
         setRenderedResponse(res);
         pushToCache(res[0]);
-      }).finally(() => {
-        setImageIndex(imgCache.length);
       })
+      .finally(() => {
+        setImageIndex(imgCache.length);
+      });
   }
 
-  function handleBreedSelection() {
-    // This handler is intended to set the fetchURL state slice based on the user selection from the breeds dropdown
-    // The ideal solution will populate the dropdown with the breed list API endpoint using its own state slice
-    // during the useEffect that runs on page load
+  function handleBreedSelection(value) {
+    setBreedId(value);
   }
 
   function Buttons() {
     const cache = imgCache;
 
     return (
-      <div className="buttonsContainer">
-        <button disabled={imgIndex == 0} onClick={handlePrev}>Prev</button>
-        <button onClick={handleRand}>Random</button>
-        <select name = "breeds" id = "breeds">
-          <option value="beng">Bengals</option>
-          <option value="awir">American Wirehairs</option>
-        </select>
-        <button disabled={imgIndex == cache.length - 1} onClick={handleNext}>Next</button>
-      </div>
-    )
+      <>
+        <div className="buttonsContainer">
+          <button disabled={imgIndex == 0} onClick={handlePrev}>
+            Prev
+          </button>
+          <button onClick={handleRand}>Random</button>
+          <select
+            onChange={(e) => {
+              handleBreedSelection(e.target.value)
+            }}
+            name="breeds"
+            id="breeds"
+          >
+            <option>Choose breed</option>
+            <option value="beng">Bengals</option>
+            <option value="awir">American Wirehairs</option>
+          </select>
+          <button disabled={imgIndex == cache.length - 1} onClick={handleNext}>
+            Next
+          </button>
+        </div>
+      </>
+    );
   }
 
   function Response() {
     const { url, breeds } = imgCache[imgIndex];
-
-    console.log(breeds);
 
     return (
       <div className="container">
@@ -88,28 +121,32 @@ function App() {
           </figure>
           <dl>
             <dt>Breed:</dt>
-            <dd>{breeds.length
-                  ? breeds[0].name
-                  : "no breed info"
-                  }</dd>
+            <dd>{breeds.length ? breeds[0].name : "no breed info"}</dd>
             <dt> Life Span:</dt>
-            <dd>{ breeds.length
-                  ? breeds[0].life_span + " years"
-                  : "no life span info"
-                }</dd>
+            <dd>
+              {breeds.length
+                ? breeds[0].life_span + " years"
+                : "no life span info"}
+            </dd>
             <dt>Url:</dt>
-            <dd><a href={url} target="_blank" rel="noreferrer noopener">{url}</a></dd>
+            <dd>
+              <a href={url} target="_blank" rel="noreferrer noopener">
+                {url}
+              </a>
+            </dd>
           </dl>
         </div>
         <Buttons />
-      </div >
-    )
+      </div>
+    );
   }
 
   return (
     <div className="App">
       <MainContent>
-        {renderedResponse && renderedResponse[0] && imgCache.length > 0 && <Response />}
+        {renderedResponse && renderedResponse[0] && imgCache.length > 0 && (
+          <Response />
+        )}
       </MainContent>
     </div>
   );
