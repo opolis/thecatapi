@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from "react";
 import "./index.css";
 
+// Current functionality:
+// Dropdown is generated manually from the API endpoint data
+// After a breed is selected by the dropdown, if the "random" button is pressed the user will see an entry for the selected breed.
+//
+// Desired future functionality:
+// The webpage should show a random cat of the selected breed as soon as the dropdown selection is made
+// The dropdown should have a "sticky" label after selected
+
 function App() {
   const [renderedResponse, setRenderedResponse] = useState([]);
   const [imgCache, setImageCache] = useState([]);
@@ -42,11 +50,10 @@ function App() {
       setFetchURL(
         `https://api.thecatapi.com/v1/images/search?breed_id=${breedId}`
       );
-      getResponse()
-      .then((res) => {
+      getResponse().then((res) => {
         setRenderedResponse(res);
         pushToCache(res[0]);
-      })
+      });
     }
   }, [breedId]);
 
@@ -93,14 +100,14 @@ function App() {
           <button onClick={handleRand}>Random</button>
           <select
             onChange={(e) => {
-              handleBreedSelection(e.target.value)
+              handleBreedSelection(e.target.value);
             }}
             name="breeds"
             id="breeds"
           >
-            <option>Choose breed</option>
-            <option value="beng">Bengals</option>
-            <option value="awir">American Wirehairs</option>
+            {breedList.map((entry) => (
+              <option value={entry.id}>{entry.name}</option>
+            ))}
           </select>
           <button disabled={imgIndex == cache.length - 1} onClick={handleNext}>
             Next
