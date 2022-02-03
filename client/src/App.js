@@ -50,11 +50,7 @@ function App() {
     if (breedId) {
       setFetchURL(
         `https://api.thecatapi.com/v1/images/search?breed_id=${breedId}`
-      );
-      getResponse().then((res) => {
-        setRenderedResponse(res);
-        pushToCache(res[0]);
-      });
+      );      
     }
   }, [breedId]);
 
@@ -114,6 +110,7 @@ function App() {
               <option value={[entry.id, entry.name]}>{entry.name}</option>
             ))}
           </select>
+          <button disabled={!breedId} onClick={handleRand}>Find selected breed</button>
           <button disabled={imgIndex == cache.length - 1} onClick={handleNext}>
             Next
           </button>
