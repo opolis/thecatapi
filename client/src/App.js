@@ -100,7 +100,6 @@ function App() {
           <select
             onChange={(e) => {
               handleBreedSelection(e.target.value);
-              console.log(e.target.value)
             }}
             name="breeds"
             id="breeds"
