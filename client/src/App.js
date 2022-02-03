@@ -1,14 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./index.css";
 
-// Current functionality:
-// Dropdown is generated manually from the API endpoint data
-// After a breed is selected by the dropdown, if the "random" button is pressed the user will see an entry for the selected breed.
-//
-// Desired future functionality:
-// The webpage should show a random cat of the selected breed as soon as the dropdown selection is made
-// The dropdown should have a "sticky" label after selected
-
 function App() {
   const [renderedResponse, setRenderedResponse] = useState([]);
   const [imgCache, setImageCache] = useState([]);
